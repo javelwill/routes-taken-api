@@ -28,14 +28,38 @@ router.post(
       })
 
       res.status(200).json({ token })
-    } catch (err) {
+    } catch (error) {
       return res.status(500).json({ error: 'Someting went wrong' })
     }
   }
 )
 
-router.post('/signin', (req, res) => {
-  res.send('Signin')
+router.post('/signin', async (req, res) => {
+  const { email, password } = req.body
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Must provide email and password' })
+  }
+
+  try {
+    const user = await User.findOne({ email })
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password' })
+    }
+
+    const match = await user.comparePassword(password)
+    if (!match) {
+      return res.status(401).json({ error: 'Invalid email or password' })
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: 3600,
+    })
+
+    res.status(200).json({ token })
+  } catch (error) {
+    return res.status(500).json({ error: 'Something went wrong' })
+  }
 })
 
 module.exports = router
