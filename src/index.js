@@ -2,6 +2,9 @@ require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 
+const authRoutes = require('./routes/authRoutes')
+const routeRoutes = require('./routes/routeRoutes')
+
 mongoose.connect(process.env.MONGO_URI, {
   useCreateIndex: true,
   useFindAndModify: false,
@@ -18,6 +21,9 @@ mongoose.connection.on('err', () =>
 )
 
 const app = express()
+
+app.use(authRoutes)
+app.use(routeRoutes)
 
 app.get('/', (req, res) => {
   res.send('Routes Taken API')
