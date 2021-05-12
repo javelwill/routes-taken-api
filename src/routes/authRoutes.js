@@ -23,9 +23,7 @@ router.post(
       const user = new User({ email, password })
       await user.save()
 
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-        expiresIn: 3600,
-      })
+      const token = user.getSignedJwtToken()
 
       res.status(200).json({ token })
     } catch (error) {
@@ -52,9 +50,7 @@ router.post('/signin', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' })
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: 3600,
-    })
+    const token = user.getSignedJwtToken()
 
     res.status(200).json({ token })
   } catch (error) {
