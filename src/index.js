@@ -22,7 +22,7 @@ mongoose.connection.on('err', () =>
 )
 
 const app = express()
-
+app.use(express.json())
 app.use(authRoutes)
 app.use(routeRoutes)
 
