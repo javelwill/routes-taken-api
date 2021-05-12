@@ -1,5 +1,21 @@
 require('dotenv').config()
 const express = require('express')
+const mongoose = require('mongoose')
+
+mongoose.connect(process.env.MONGO_URI, {
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+
+mongoose.connection.on('connected', () =>
+  console.log('Connected to mongodb instance')
+)
+
+mongoose.connection.on('err', () =>
+  console.log('Error connecting to mongodb instance', err)
+)
 
 const app = express()
 
